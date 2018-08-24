@@ -12,6 +12,7 @@ use OG\SendGridBundle\Exception\SendGridException;
 
 class SendGridProvider
 {
+
     /** @var \SendGrid */
     private $sendgrid;
 
