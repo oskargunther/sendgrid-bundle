@@ -2,3 +2,7 @@ services:
 #    og_send_grid.example:
 #        class: OG\SendGridBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+  og_send_grid.provider:
+    class: OG\SendGridBundle\Provider\SendGridProvider
+    arguments:
+      - '%og_send_grid.api_key%'
