@@ -71,6 +71,7 @@ class SendGridProvider
         }
 
         if($this->disableDelivery) {
+            $this->stop();
             return null;
         }
 
@@ -78,6 +79,8 @@ class SendGridProvider
             $response = $this->sendgrid->send($mail);
             $this->checkResponse($response);
         } catch (\Exception $e) {
+            $this->stop();
+
             if($e instanceof SendGridException) {
                 throw $e;
             }
@@ -103,7 +106,9 @@ class SendGridProvider
     private function stop()
     {
         if($this->webProfiler) {
-            $this->watch->stop(self::EVENT);
+            $event = $this->watch->stop(self::EVENT);
+            dump($event);
+            $event->ensureStopped();
         }
     }
 
