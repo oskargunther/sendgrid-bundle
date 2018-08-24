@@ -107,7 +107,6 @@ class SendGridProvider
     {
         if($this->webProfiler) {
             $event = $this->watch->stop(self::EVENT);
-            dump($event);
             $event->ensureStopped();
         }
     }
