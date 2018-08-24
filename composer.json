@@ -2,6 +2,7 @@
     "name": "oskargunther/sendgrid-bundle",
     "type": "library",
     "license": "MIT",
+    "description": "Integrates sendgrid-php with Symfony >=2.8 with extra message profiling",
     "authors": [
         {
             "name": "Oskar Gunther",
