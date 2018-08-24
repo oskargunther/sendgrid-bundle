@@ -1,0 +1,21 @@
+{
+    "name": "oskargunther/sendgrid-bundle",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oskar Gunther",
+            "email": "oskar.gunther94@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+
+        "sendgrid/sendgrid": "~7"
+    },
+    "autoload": {
+        "psr-4": {
+            "OG\\SendGridBundle\\": ""
+        }
+    }
+}
