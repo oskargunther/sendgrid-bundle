@@ -26,6 +26,7 @@ Configuration:
 og_send_grid:
    api_key: string
    disable_delivery: false
+   web_profiler: true
 ```
 
 
