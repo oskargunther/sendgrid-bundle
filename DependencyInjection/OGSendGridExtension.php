@@ -24,6 +24,7 @@ class OGSendGridExtension extends Extension
 
         $container->setParameter('og_send_grid.api_key', $config['api_key']);
         $container->setParameter('og_send_grid.disable_delivery', $config['disable_delivery']);
+        $container->setParameter('og_send_grid.web_profiler', $config['web_profiler']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

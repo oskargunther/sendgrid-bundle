@@ -19,15 +19,24 @@ class SendGridProvider
     /** @var boolean */
     private $disableDelivery;
 
+    /** @var Mail[] */
+    private $messages;
+
+    /** @var boolean */
+    private $webProfiler;
+
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
      * @param $disableDelivery boolean
+     * @param $webProfiler boolean
      */
-    public function __construct($apiKey, $disableDelivery)
+    public function __construct($apiKey, $disableDelivery, $webProfiler)
     {
         $this->sendgrid = new \SendGrid($apiKey);
         $this->disableDelivery = $disableDelivery;
+        $this->webProfiler = $webProfiler;
+        $this->messages = [];
     }
 
     /**
@@ -45,6 +54,10 @@ class SendGridProvider
      */
     public function send(Mail $mail)
     {
+        if($this->webProfiler) {
+            $this->messages[] = $mail;
+        }
+
         if($this->disableDelivery) {
             return null;
         }
@@ -57,4 +70,10 @@ class SendGridProvider
 
         return $response;
     }
+
+    public function getSentMessages()
+    {
+        return $this->messages;
+    }
+
 }

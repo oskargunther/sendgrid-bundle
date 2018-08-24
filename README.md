@@ -50,3 +50,8 @@ try {
     echo 'Caught exception: '. $e->getMessage() ."\n";
 }
 ```
+
+Profiling sent messages (even if delivery is disabled):
+
+![alt text](https://github.com/oskargunther/sendgrid-bundle/Doc/profiler.png)
+
