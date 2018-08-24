@@ -7,8 +7,10 @@
  */
 namespace OG\SendGridBundle\Provider;
 
+use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
+use SendGrid\Response;
 
 class SendGridProvider
 {
@@ -64,6 +66,7 @@ class SendGridProvider
 
         try {
             $response = $this->sendgrid->send($mail);
+            $this->checkResponse($response);
         } catch (\Exception $e) {
             throw new SendGridException($e->getMessage());
         }
@@ -76,4 +79,10 @@ class SendGridProvider
         return $this->messages;
     }
 
+    private function checkResponse(Response $response)
+    {
+        if($response->statusCode() == 401) {
+            throw new UnauthorizedSendGridException($response->body());
+        }
+    }
 }
