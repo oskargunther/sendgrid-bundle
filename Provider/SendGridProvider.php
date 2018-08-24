@@ -16,13 +16,18 @@ class SendGridProvider
     /** @var \SendGrid */
     private $sendgrid;
 
+    /** @var boolean */
+    private $disableDelivery;
+
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
+     * @param $disableDelivery boolean
      */
-    public function __construct($apiKey)
+    public function __construct($apiKey, $disableDelivery)
     {
         $this->sendgrid = new \SendGrid($apiKey);
+        $this->disableDelivery = $disableDelivery;
     }
 
     /**
@@ -33,8 +38,17 @@ class SendGridProvider
         return new Mail();
     }
 
+    /**
+     * @param Mail $mail
+     * @return \SendGrid\Response|null
+     * @throws SendGridException
+     */
     public function send(Mail $mail)
     {
+        if($this->disableDelivery) {
+            return null;
+        }
+
         try {
             $response = $this->sendgrid->send($mail);
         } catch (\Exception $e) {
