@@ -32,6 +32,8 @@ og_send_grid:
 Usage:
 
 ```php
+use OG\SendGridBundle\Exception\SendGridException;
+
 $provider = $this->get('og_send_grid.provider');
 
 $email = $provider->createMessage();
@@ -40,8 +42,7 @@ $email->setFrom("test@test.pl", "Example User");
 $email->setSubject("Test subject");
 $email->addTo("o.gunther@test.pl", "Example User");
 $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
-$email->addContent("text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
-);
+$email->addContent("text/html", "<strong>and easy to do anywhere, even with PHP</strong>");
 
 try {
     $messageId = $provider->send($email);
