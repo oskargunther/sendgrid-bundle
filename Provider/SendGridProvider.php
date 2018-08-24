@@ -67,6 +67,10 @@ class SendGridProvider
     {
         $this->start();
         if($this->disableDelivery) {
+            if($this->webProfiler) {
+                $this->messages[] = $mail;
+            }
+
             $this->stop();
             return null;
         }
