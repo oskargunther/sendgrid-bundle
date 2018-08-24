@@ -7,3 +7,16 @@ services:
     arguments:
       - '%og_send_grid.api_key%'
       - '%og_send_grid.disable_delivery%'
+      - '%og_send_grid.web_profiler%'
+    public: true
+
+  og_send_grid.data_collector:
+    class: OG\SendGridBundle\DataCollector\SendGridDataCollector
+    arguments:
+      - '@og_send_grid.provider'
+      - '%og_send_grid.web_profiler%'
+    tags:
+    - name: data_collector
+      template: '@OGSendGrid/WebProfiler/index.html.twig'
+      id: 'og_send_grid.data_collector'
+    public: false

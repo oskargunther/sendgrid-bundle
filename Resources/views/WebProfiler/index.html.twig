@@ -1,0 +1,94 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <span class="icon"><img src="https://sendgrid.com/wp-content/themes/sgdotcom/pages/resource/brand/2016/SendGrid-Logomark.png" alt=""/></span>
+        <span class="sf-toolbar-value">SendGrid</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            {% if collector.isEnabled %}
+                <b>Sent messages</b>
+                <span>{{ collector.messages|length }}</span>
+            {% else %}
+                <b>Data collector is disabled</b>
+            {% endif %}
+        </div>
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't
+       show a section in the web profiler #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': profiler_url }) }}
+{% endblock %}
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label {% if not collector.isEnabled %}disabled{% endif %} {% if not collector.messages|length %}disabled{% endif %}">
+        <span class="icon"><img src="https://sendgrid.com/wp-content/themes/sgdotcom/pages/resource/brand/2016/SendGrid-Logomark.png" alt=""/></span>
+        <strong>SendGrid</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>SendGrid Profiler</h2>
+
+    <div class="metrics">
+        <div class="metric">
+            <span class="value">{{ collector.messages|length }}</span>
+            <span class="label">Sent messages</span>
+        </div>
+    </div>
+    {% if collector.isEnabled %}
+        {% for message in collector.messages %}
+                <h3><b>#{{ loop.index }}:</b> {{ message.subject }}</h3>
+                <table class="{{ class|default('') }}">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="key">Key</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>From</th>
+                            <td>{{ message.from }}</td>
+                        </tr>
+                        <tr>
+                            <th>To</th>
+                            <td>
+                                {{ message.tos|join(', ') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Bcc</th>
+                            <td>
+                                {{ message.bccs|join(', ') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Cc</th>
+                            <td>
+                                {{ message.ccs|join(', ') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Contents</th>
+                            <td>
+                                {{ dump(message.contents) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Attachments</th>
+                            <td>
+                                {{ dump(message.attachments) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        {% endfor %}
+    {% else %}
+        <b>Data collector is disabled</b>
+    {% endif %}
+
+{% endblock %}

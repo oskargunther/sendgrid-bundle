@@ -25,6 +25,9 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('disable_delivery')
                 ->defaultFalse()
             ->end()
+            ->booleanNode('web_profiler')
+                ->defaultFalse()
+            ->end()
         ->end();
 
         // Here you should define the parameters that are allowed to

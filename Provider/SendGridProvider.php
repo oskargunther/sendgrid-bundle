@@ -7,8 +7,10 @@
  */
 namespace OG\SendGridBundle\Provider;
 
+use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
+use SendGrid\Response;
 
 class SendGridProvider
 {
@@ -19,15 +21,24 @@ class SendGridProvider
     /** @var boolean */
     private $disableDelivery;
 
+    /** @var Mail[] */
+    private $messages;
+
+    /** @var boolean */
+    private $webProfiler;
+
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
      * @param $disableDelivery boolean
+     * @param $webProfiler boolean
      */
-    public function __construct($apiKey, $disableDelivery)
+    public function __construct($apiKey, $disableDelivery, $webProfiler)
     {
         $this->sendgrid = new \SendGrid($apiKey);
         $this->disableDelivery = $disableDelivery;
+        $this->webProfiler = $webProfiler;
+        $this->messages = [];
     }
 
     /**
@@ -45,16 +56,36 @@ class SendGridProvider
      */
     public function send(Mail $mail)
     {
+        if($this->webProfiler) {
+            $this->messages[] = $mail;
+        }
+
         if($this->disableDelivery) {
             return null;
         }
 
         try {
             $response = $this->sendgrid->send($mail);
+            $this->checkResponse($response);
         } catch (\Exception $e) {
+            if($e instanceof SendGridException) {
+                throw $e;
+            }
             throw new SendGridException($e->getMessage());
         }
 
         return $response;
+    }
+
+    public function getSentMessages()
+    {
+        return $this->messages;
+    }
+
+    private function checkResponse(Response $response)
+    {
+        if($response->statusCode() == 401) {
+            throw new UnauthorizedSendGridException($response->body());
+        }
     }
 }
