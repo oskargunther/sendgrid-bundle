@@ -11,9 +11,11 @@ use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
 use SendGrid\Response;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class SendGridProvider
 {
+    const EVENT = 'sendgrid';
 
     /** @var \SendGrid */
     private $sendgrid;
@@ -27,18 +29,25 @@ class SendGridProvider
     /** @var boolean */
     private $webProfiler;
 
+    /** @var Stopwatch */
+    private $watch;
+
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
      * @param $disableDelivery boolean
      * @param $webProfiler boolean
+     * @param $watch Stopwatch
      */
-    public function __construct($apiKey, $disableDelivery, $webProfiler)
+    public function __construct($apiKey, $disableDelivery, $webProfiler, Stopwatch $watch)
     {
         $this->sendgrid = new \SendGrid($apiKey);
         $this->disableDelivery = $disableDelivery;
         $this->webProfiler = $webProfiler;
         $this->messages = [];
+        if($webProfiler) {
+            $this->watch = $watch;
+        }
     }
 
     /**
@@ -56,6 +65,7 @@ class SendGridProvider
      */
     public function send(Mail $mail)
     {
+        $this->start();
         if($this->webProfiler) {
             $this->messages[] = $mail;
         }
@@ -74,12 +84,27 @@ class SendGridProvider
             throw new SendGridException($e->getMessage());
         }
 
+        $this->stop();
         return $response;
     }
 
     public function getSentMessages()
     {
         return $this->messages;
+    }
+
+    private function start()
+    {
+        if($this->webProfiler) {
+            $this->watch->start(self::EVENT);
+        }
+    }
+
+    private function stop()
+    {
+        if($this->webProfiler) {
+            $this->watch->stop(self::EVENT);
+        }
     }
 
     private function checkResponse(Response $response)
