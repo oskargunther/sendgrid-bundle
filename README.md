@@ -28,3 +28,25 @@ og_send_grid:
    disable_delivery: false
 ```
 
+
+Usage:
+
+```php
+$provider = $container->get('disable_delivery');
+
+$message = $provider->createNewMessage();
+
+$email->setFrom("test@example.com", "Example User");
+$email->setSubject("Sending with SendGrid is Fun");
+$email->addTo("test@example.com", "Example User");
+$email->addContent("text/plain", "and easy to do anywhere, even with PHP");
+$email->addContent(
+    "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
+);
+
+try {
+    $response = $sendgrid->send($email);
+} catch (OG\SendGridBundle\Exception\SendGridException $e) {
+    echo 'Caught exception: '. $e->getMessage() ."\n";
+}
+```

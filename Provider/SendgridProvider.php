@@ -8,6 +8,7 @@
 namespace OG\SendGridBundle\Provider;
 
 use \SendGrid\Mail\Mail;
+use OG\SendGridBundle\Exception\SendGridException;
 
 class SendGridProvider
 {
@@ -33,7 +34,11 @@ class SendGridProvider
 
     public function send(Mail $mail)
     {
-        $response = $this->sendgrid->send($mail);
+        try {
+            $response = $this->sendgrid->send($mail);
+        } catch (\Exception $e) {
+            throw new SendGridException($e->getMessage());
+        }
 
         return $response;
     }
