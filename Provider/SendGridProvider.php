@@ -68,6 +68,9 @@ class SendGridProvider
             $response = $this->sendgrid->send($mail);
             $this->checkResponse($response);
         } catch (\Exception $e) {
+            if($e instanceof SendGridException) {
+                throw $e;
+            }
             throw new SendGridException($e->getMessage());
         }
 
