@@ -20,3 +20,11 @@ class AppKernel extends Kernel
 }
 ```
 
+Configuration:
+
+```yaml
+og_send_grid:
+   api_key: string
+   disable_delivery: false
+```
+
