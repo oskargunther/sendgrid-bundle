@@ -54,5 +54,5 @@ try {
 
 Profiling sent messages (even if delivery is disabled):
 
-![alt text](https://github.com/oskargunther/sendgrid-bundle/Doc/profiler.png)
+![alt text](https://github.com/oskargunther/sendgrid-bundle/blob/master/Doc/profiler.png)
 
