@@ -7,6 +7,7 @@
  */
 namespace OG\SendGridBundle\DataCollector;
 
+use OG\SendGridBundle\Exception\SendGridException;
 use OG\SendGridBundle\Provider\SendGridProvider;
 use SendGrid\Mail\Attachment;
 use SendGrid\Mail\EmailAddress;
@@ -36,8 +37,23 @@ class SendGridDataCollector extends DataCollector
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $this->data['messages'] = array_map(function(Mail $mail) {
-            return [
+        if(!$exception instanceof SendGridException) {
+            $this->data['messages'] = $this->transform($this->sendGridProvider->getSentMessages());
+            $this->data['isEnabled'] = $this->webProfiler;
+            $this->data['duration'] = $this->stopwatch->getEvent(SendGridProvider::EVENT)->getDuration();
+        };
+
+    }
+
+    private function transform(array $messages = [])
+    {
+        $result = [];
+        /**
+         * @var  $messageId string
+         * @var  $mail Mail
+         */
+        foreach ($messages as $messageId => $mail) {
+            $result[] = [
                 'subject' => $mail->getGlobalSubject()->getSubject(),
                 'from' => $this->formatAddress($mail->getFrom()),
                 'tos' => $this->getRecipients($mail, 'tos'),
@@ -52,11 +68,11 @@ class SendGridDataCollector extends DataCollector
                         'disposition' => $attachment->getDisposition()
                     ];
                 }, $mail->getAttachments()),
+                'messageId' => $messageId,
             ];
-        }, $this->sendGridProvider->getSentMessages());
+        }
 
-        $this->data['isEnabled'] = $this->webProfiler;
-        $this->data['duration'] = $this->stopwatch->getEvent(SendGridProvider::EVENT)->getDuration();
+        return $result;
     }
 
     private function getRecipients(Mail $mail, $type)

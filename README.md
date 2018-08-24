@@ -1,4 +1,4 @@
-Instalation
+Installation:
 
     composer require oskargunther/sendgrid-bundle
     
@@ -13,7 +13,6 @@ class AppKernel extends Kernel
         $bundles = [
             ....
             new \OG\SendGridBundle\OGSendGridBundle(),
-            
         ];
 
     }
@@ -38,15 +37,14 @@ $provider = $this->get('og_send_grid.provider');
 $email = $provider->createMessage();
 
 $email->setFrom("test@test.pl", "Example User");
-$email->setSubject("Testn");
+$email->setSubject("Test subject");
 $email->addTo("o.gunther@test.pl", "Example User");
 $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
-$email->addContent(
-    "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
+$email->addContent("text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
 );
 
 try {
-    $response = $provider->send($email);
+    $messageId = $provider->send($email);
 } catch (SendGridException $e) {
     echo 'Caught exception: '. $e->getMessage() ."\n";
 }

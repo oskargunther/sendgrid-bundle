@@ -7,6 +7,8 @@
  */
 namespace OG\SendGridBundle\Provider;
 
+use OG\SendGridBundle\Exception\AccessDeniedSendGridException;
+use OG\SendGridBundle\Exception\BadRequestSendGridException;
 use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
@@ -45,9 +47,7 @@ class SendGridProvider
         $this->disableDelivery = $disableDelivery;
         $this->webProfiler = $webProfiler;
         $this->messages = [];
-        if($webProfiler) {
-            $this->watch = $watch;
-        }
+        $this->watch = $watch;
     }
 
     /**
@@ -60,16 +60,12 @@ class SendGridProvider
 
     /**
      * @param Mail $mail
-     * @return \SendGrid\Response|null
+     * @return string MessageId
      * @throws SendGridException
      */
     public function send(Mail $mail)
     {
         $this->start();
-        if($this->webProfiler) {
-            $this->messages[] = $mail;
-        }
-
         if($this->disableDelivery) {
             $this->stop();
             return null;
@@ -88,7 +84,18 @@ class SendGridProvider
         }
 
         $this->stop();
-        return $response;
+
+        $messageId = $this->getMessageId($response);
+        if($this->webProfiler) {
+            $this->messages[$messageId] = $mail;
+        }
+
+        return $messageId;
+    }
+
+    private function getMessageId(Response $response)
+    {
+        return $response->headers(true)['X-Message-Id'];
     }
 
     public function getSentMessages()
@@ -106,15 +113,26 @@ class SendGridProvider
     private function stop()
     {
         if($this->webProfiler) {
-            $event = $this->watch->stop(self::EVENT);
-            $event->ensureStopped();
+            $this->watch->stop(self::EVENT);
         }
     }
 
     private function checkResponse(Response $response)
     {
-        if($response->statusCode() == 401) {
+        if ($response->statusCode() == 401) {
             throw new UnauthorizedSendGridException($response->body());
+        }
+
+        if ($response->statusCode() == 403) {
+            throw new AccessDeniedSendGridException($response->body());
+        }
+
+        if (preg_match('/5[0-9]{2}/', $response->statusCode())) {
+            throw new \Exception($response->body());
+        }
+
+        if (preg_match('/4[0-9]{2}/', $response->statusCode())) {
+            throw new BadRequestSendGridException($response->body());
         }
     }
 }
