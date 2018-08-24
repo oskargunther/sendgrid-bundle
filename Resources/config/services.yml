@@ -6,3 +6,4 @@ services:
     class: OG\SendGridBundle\Provider\SendGridProvider
     arguments:
       - '%og_send_grid.api_key%'
+      - '%og_send_grid.disable_delivery%'

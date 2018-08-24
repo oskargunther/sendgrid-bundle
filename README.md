@@ -32,21 +32,21 @@ og_send_grid:
 Usage:
 
 ```php
-$provider = $container->get('disable_delivery');
+$provider = $this->get('og_send_grid.provider');
 
-$message = $provider->createNewMessage();
+$email = $provider->createMessage();
 
-$email->setFrom("test@example.com", "Example User");
-$email->setSubject("Sending with SendGrid is Fun");
-$email->addTo("test@example.com", "Example User");
+$email->setFrom("test@test.pl", "Example User");
+$email->setSubject("Testn");
+$email->addTo("o.gunther@test.pl", "Example User");
 $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
 $email->addContent(
     "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
 );
 
 try {
-    $response = $sendgrid->send($email);
-} catch (OG\SendGridBundle\Exception\SendGridException $e) {
+    $response = $provider->send($email);
+} catch (SendGridException $e) {
     echo 'Caught exception: '. $e->getMessage() ."\n";
 }
 ```
