@@ -14,6 +14,7 @@ use SendGrid\Mail\Mail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class SendGridDataCollector extends DataCollector
 {
@@ -23,10 +24,14 @@ class SendGridDataCollector extends DataCollector
     /** @var boolean */
     private $webProfiler;
 
-    public function __construct(SendGridProvider $sendGridProvider, $webProfiler)
+    /** @var Stopwatch */
+    private $stopwatch;
+
+    public function __construct(SendGridProvider $sendGridProvider, $webProfiler, Stopwatch $stopwatch)
     {
         $this->sendGridProvider = $sendGridProvider;
         $this->webProfiler = $webProfiler;
+        $this->stopwatch = $stopwatch;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
@@ -51,6 +56,7 @@ class SendGridDataCollector extends DataCollector
         }, $this->sendGridProvider->getSentMessages());
 
         $this->data['isEnabled'] = $this->webProfiler;
+        $this->data['duration'] = $this->stopwatch->getEvent(SendGridProvider::EVENT)->getDuration();
     }
 
     private function getRecipients(Mail $mail, $type)
@@ -95,4 +101,8 @@ class SendGridDataCollector extends DataCollector
         return $this->data['isEnabled'];
     }
 
+    public function getDuration()
+    {
+        return $this->data['duration'];
+    }
 }

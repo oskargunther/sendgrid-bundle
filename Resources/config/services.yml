@@ -8,6 +8,7 @@ services:
       - '%og_send_grid.api_key%'
       - '%og_send_grid.disable_delivery%'
       - '%og_send_grid.web_profiler%'
+      - '@debug.stopwatch'
     public: true
 
   og_send_grid.data_collector:
@@ -15,6 +16,7 @@ services:
     arguments:
       - '@og_send_grid.provider'
       - '%og_send_grid.web_profiler%'
+      - '@debug.stopwatch'
     tags:
     - name: data_collector
       template: '@OGSendGrid/WebProfiler/index.html.twig'
