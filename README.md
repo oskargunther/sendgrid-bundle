@@ -1,6 +1,6 @@
-### Documentation
+# Documentation
 
-# Features
+### Features
 - Configure sendgrid-php through yaml
 - Disable delivery through parameter
 - WebProfiler Extension
@@ -8,12 +8,12 @@
 
 ## Using the Bundle.
 
-# Installation:
+### Installation:
 
     composer require oskargunther/sendgrid-bundle
     
     
-# Add bundle to kernel:
+### Add bundle to kernel:
 
 ```php
 class AppKernel extends Kernel
@@ -29,7 +29,7 @@ class AppKernel extends Kernel
 }
 ```
 
-# Configuration:
+### Configuration:
 
 ```yaml
 og_send_grid:
@@ -39,7 +39,7 @@ og_send_grid:
 ```
 
 
-# Usage:
+### Usage:
 
 ```php
 use OG\SendGridBundle\Exception\SendGridException;
@@ -63,7 +63,7 @@ try {
 
 ## WebHook with SendGrid WebHook events
 
-# Configuration:
+### Configuration:
 
 Event subscriber:
 ```php
