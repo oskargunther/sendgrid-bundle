@@ -1,6 +1,4 @@
-## Documentation
-
-# Symfony 2.8 SendGrid Bundle
+# Documentation
 
 ### Features
 - Configure sendgrid-php through yaml
@@ -33,13 +31,18 @@ class AppKernel extends Kernel
 
 ### Configuration:
 
+#### config.yml
 ```yaml
 og_send_grid:
    api_key: string
    disable_delivery: false
-   web_profiler: true # Profiling should be disabled on prod environment
 ```
 
+#### config_dev.yml
+```yaml
+og_send_grid:
+   web_profiler: true
+```
 
 ### Usage:
 
