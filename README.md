@@ -118,7 +118,7 @@ class WebHookSubcriber extends WebHookEventSubscriber
     {
     }
 
-    function onSpamreport(WebHookEvent $event)
+    function onSpamReport(WebHookEvent $event)
     {
     }
 

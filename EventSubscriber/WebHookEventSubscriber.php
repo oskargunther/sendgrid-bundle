@@ -40,6 +40,6 @@ abstract class WebHookEventSubscriber implements EventSubscriberInterface
     abstract function onGroupUnsubscribe(WebHookEvent $event);
     abstract function onOpen(WebHookEvent $event);
     abstract function onProcessed(WebHookEvent $event);
-    abstract function onSpamreport(WebHookEvent $event);
+    abstract function onSpamReport(WebHookEvent $event);
     abstract function onUnsubscribe(WebHookEvent $event);
 }
