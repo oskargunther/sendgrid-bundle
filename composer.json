@@ -16,11 +16,16 @@
         "symfony/config": ">=2.8.30",
         "symfony/yaml": ">=2.8.30",
         "symfony/var-dumper": ">=2.8.30",
-        "sendgrid/sendgrid": "~7"
+        "sendgrid/sendgrid": "~7",
+        "symfony/http-foundation": ">=2.8.30"
     },
     "autoload": {
         "psr-4": {
             "OG\\SendGridBundle\\": ""
         }
+    },
+    "require-dev": {
+        "symfony/profiler-pack": "^1.0",
+        "symfony/framework-bundle": ">=2.8.30"
     }
 }
