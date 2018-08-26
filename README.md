@@ -61,7 +61,7 @@ try {
 }
 ```
 
-## WebHook with SendGrid WebHook events
+## Working with SendGrid WebHook events
 
 ### Configuration:
 
