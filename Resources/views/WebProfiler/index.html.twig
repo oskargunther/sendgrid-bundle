@@ -65,19 +65,19 @@
                         <tr>
                             <th>To</th>
                             <td>
-                                {{ message.tos|join(', ') }}
+                                {{ dump(message.tos) }}
                             </td>
                         </tr>
                         <tr>
                             <th>Bcc</th>
                             <td>
-                                {{ message.bccs|join(', ') }}
+                                {{ dump(message.bccs) }}
                             </td>
                         </tr>
                         <tr>
                             <th>Cc</th>
                             <td>
-                                {{ message.ccs|join(', ') }}
+                                {{ dump(message.ccs) }}
                             </td>
                         </tr>
                         <tr>

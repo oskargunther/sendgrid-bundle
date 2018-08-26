@@ -7,9 +7,9 @@
  */
 namespace OG\SendGridBundle\DataCollector;
 
-use OG\SendGridBundle\Exception\SendGridException;
-use OG\SendGridBundle\Provider\SendGridProvider;
+use OG\SendGridBundle\EventSubscriber\SendGridEventSubscriber;
 use SendGrid\Mail\Attachment;
+use SendGrid\Mail\Content;
 use SendGrid\Mail\EmailAddress;
 use SendGrid\Mail\Mail;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,60 +19,58 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class SendGridDataCollector extends DataCollector
 {
-    /** @var SendGridProvider */
-    private $sendGridProvider;
-
     /** @var boolean */
     private $webProfiler;
 
     /** @var Stopwatch */
     private $stopwatch;
 
-    public function __construct(SendGridProvider $sendGridProvider, $webProfiler, Stopwatch $stopwatch)
+    /** @var array */
+    private $messages;
+
+    public function __construct($webProfiler, Stopwatch $stopwatch)
     {
-        $this->sendGridProvider = $sendGridProvider;
         $this->webProfiler = $webProfiler;
         $this->stopwatch = $stopwatch;
+        $this->messages = [];
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        if(!$exception instanceof SendGridException) {
-            $this->data['messages'] = $this->transform($this->sendGridProvider->getSentMessages());
-            $this->data['isEnabled'] = $this->webProfiler;
-            $this->data['duration'] = $this->stopwatch->getEvent(SendGridProvider::EVENT)->getDuration();
-        };
+        $this->data['messages'] = $this->messages;
+        $this->data['isEnabled'] = $this->webProfiler;
 
+        try {
+            $this->data['duration'] = $this->stopwatch->getEvent(SendGridEventSubscriber::STOPWATCH_EVENT)->getDuration();
+        } catch (\Exception $e) {
+            $this->data['duration'] = 0;
+        }
     }
 
-    private function transform(array $messages = [])
+    private function transform(Mail $mail, $messageId = '')
     {
-        $result = [];
-        /**
-         * @var  $messageId string
-         * @var  $mail Mail
-         */
-        foreach ($messages as $messageId => $mail) {
-            $result[] = [
-                'subject' => $mail->getGlobalSubject()->getSubject(),
-                'from' => $this->formatAddress($mail->getFrom()),
-                'tos' => $this->getRecipients($mail, 'tos'),
-                'bccs' => $this->getRecipients($mail, 'bccs'),
-                'ccs' => $this->getRecipients($mail, 'ccs'),
-                'contents' => $mail->getContents(),
-                'attachments' => array_map(function(Attachment $attachment) {
-                    return [
-                        'filename' => $attachment->getFilename(),
-                        'mime' => $attachment->getType(),
-                        'cid' => $attachment->getContentID(),
-                        'disposition' => $attachment->getDisposition()
-                    ];
-                }, $mail->getAttachments()),
-                'messageId' => $messageId,
-            ];
-        }
-
-        return $result;
+        return [
+            'subject' => $mail->getGlobalSubject()->getSubject(),
+            'from' => $this->formatAddress($mail->getFrom()),
+            'tos' => $this->getRecipients($mail, 'tos'),
+            'bccs' => $this->getRecipients($mail, 'bccs'),
+            'ccs' => $this->getRecipients($mail, 'ccs'),
+            'contents' => array_map(function (Content $content) {
+                return [
+                    'type' => $content->getType(),
+                    'content' => $content->getValue(),
+                ];
+            }, $mail->getContents()),
+            'attachments' => array_map(function(Attachment $attachment) {
+                return [
+                    'filename' => $attachment->getFilename(),
+                    'mime' => $attachment->getType(),
+                    'cid' => $attachment->getContentID(),
+                    'disposition' => $attachment->getDisposition()
+                ];
+            }, $mail->getAttachments()),
+            'messageId' => $messageId,
+        ];
     }
 
     private function getRecipients(Mail $mail, $type)
@@ -120,5 +118,10 @@ class SendGridDataCollector extends DataCollector
     public function getDuration()
     {
         return $this->data['duration'];
+    }
+
+    public function addMessage(Mail $mail, $messageId = null)
+    {
+        $this->messages[] = $this->transform($mail, $messageId);
     }
 }

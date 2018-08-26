@@ -7,47 +7,42 @@
  */
 namespace OG\SendGridBundle\Provider;
 
+use OG\SendGridBundle\Event\SendGridEvent;
 use OG\SendGridBundle\Exception\AccessDeniedSendGridException;
 use OG\SendGridBundle\Exception\BadRequestSendGridException;
 use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
 use SendGrid\Response;
-use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SendGridProvider
 {
-    const EVENT = 'sendgrid';
-
     /** @var \SendGrid */
     private $sendgrid;
 
     /** @var boolean */
     private $disableDelivery;
 
-    /** @var Mail[] */
-    private $messages;
-
     /** @var boolean */
     private $webProfiler;
 
-    /** @var Stopwatch */
-    private $watch;
+    /** @var EventDispatcherInterface  */
+    private $eventDispatcher;
 
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
      * @param $disableDelivery boolean
      * @param $webProfiler boolean
-     * @param $watch Stopwatch
+     * @param $eventDispatcher EventDispatcherInterface
      */
-    public function __construct($apiKey, $disableDelivery, $webProfiler, Stopwatch $watch)
+    public function __construct($apiKey, $disableDelivery, $webProfiler, EventDispatcherInterface $eventDispatcher)
     {
         $this->sendgrid = new \SendGrid($apiKey);
         $this->disableDelivery = $disableDelivery;
         $this->webProfiler = $webProfiler;
-        $this->messages = [];
-        $this->watch = $watch;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -65,13 +60,9 @@ class SendGridProvider
      */
     public function send(Mail $mail)
     {
-        $this->start();
+        $this->eventDispatcher->dispatch(SendGridEvent::STARTED, new SendGridEvent($mail));
         if($this->disableDelivery) {
-            if($this->webProfiler) {
-                $this->messages[] = $mail;
-            }
-
-            $this->stop();
+            $this->eventDispatcher->dispatch(SendGridEvent::FINISHED, new SendGridEvent($mail));
             return null;
         }
 
@@ -79,20 +70,15 @@ class SendGridProvider
             $response = $this->sendgrid->send($mail);
             $this->checkResponse($response);
         } catch (\Exception $e) {
-            $this->stop();
-
+            $this->eventDispatcher->dispatch(SendGridEvent::FAILED, new SendGridEvent($mail));
             if($e instanceof SendGridException) {
                 throw $e;
             }
             throw new SendGridException($e->getMessage());
         }
 
-        $this->stop();
-
         $messageId = $this->getMessageId($response);
-        if($this->webProfiler) {
-            $this->messages[$messageId] = $mail;
-        }
+        $this->eventDispatcher->dispatch(SendGridEvent::FINISHED, new SendGridEvent($mail, $messageId));
 
         return $messageId;
     }
@@ -100,25 +86,6 @@ class SendGridProvider
     private function getMessageId(Response $response)
     {
         return $response->headers(true)['X-Message-Id'];
-    }
-
-    public function getSentMessages()
-    {
-        return $this->messages;
-    }
-
-    private function start()
-    {
-        if($this->webProfiler) {
-            $this->watch->start(self::EVENT);
-        }
-    }
-
-    private function stop()
-    {
-        if($this->webProfiler) {
-            $this->watch->stop(self::EVENT);
-        }
     }
 
     private function checkResponse(Response $response)

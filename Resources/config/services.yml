@@ -8,13 +8,12 @@ services:
       - '%og_send_grid.api_key%'
       - '%og_send_grid.disable_delivery%'
       - '%og_send_grid.web_profiler%'
-      - '@debug.stopwatch'
+      - '@event_dispatcher'
     public: true
 
   og_send_grid.data_collector:
     class: OG\SendGridBundle\DataCollector\SendGridDataCollector
     arguments:
-      - '@og_send_grid.provider'
       - '%og_send_grid.web_profiler%'
       - '@debug.stopwatch'
     tags:
@@ -22,3 +21,15 @@ services:
       template: '@OGSendGrid/WebProfiler/index.html.twig'
       id: 'og_send_grid.data_collector'
     public: false
+
+  og_send_grid.subscriber.send_grid:
+    class: OG\SendGridBundle\EventSubscriber\SendGridEventSubscriber
+    arguments:
+      - '%og_send_grid.web_profiler%'
+      - '@debug.stopwatch'
+      - '@og_send_grid.data_collector'
+    tags:
+        - { name: kernel.event_subscriber }
+
+  og_send_grid.subscriber.webhook:
+    class: OG\SendGridBundle\EventSubscriber\WebHookEventSubscriber
