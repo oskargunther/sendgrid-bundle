@@ -148,5 +148,8 @@
 
 ## Profiling sent messages (even if delivery is disabled):
 
+>1. Messages count
+>2. [sendgrid/sendgrid-php](https://github.com/sendgrid/sendgrid-php) - execution time in miliseconds
+>3. [symfony/stopwatch](https://github.com/symfony/stopwatch) events
+>
 >![alt text](https://github.com/oskargunther/sendgrid-bundle/blob/master/Doc/profiler.png)
-
