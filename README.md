@@ -11,8 +11,10 @@
 ## Using the Bundle.
 
 >### Installation:
+>```
+>composer require oskargunther/sendgrid-bundle
+>```
 >
->    composer require oskargunther/sendgrid-bundle
 >    
 >    
 >### Add bundle to kernel:
