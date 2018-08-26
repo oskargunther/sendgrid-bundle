@@ -54,8 +54,8 @@ class SendGridEventSubscriber implements EventSubscriberInterface
 
     public function onFinished(SendGridEvent $event)
     {
-        $this->dataCollector->addMessage($event->getMail(), $event->getMessageId());
         if($this->webProfiler) {
+            $this->dataCollector->addMessage($event->getMail(), $event->getMessageId());
             $this->stopwatch->stop(self::STOPWATCH_EVENT);
         }
     }
