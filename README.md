@@ -1,6 +1,6 @@
-# Symfony 2.8 SendGrid Bundle
-
 ## Documentation
+
+# Symfony 2.8 SendGrid Bundle
 
 ### Features
 - Configure sendgrid-php through yaml
