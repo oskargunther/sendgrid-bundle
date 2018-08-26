@@ -35,7 +35,7 @@ class AppKernel extends Kernel
 og_send_grid:
    api_key: string
    disable_delivery: false
-   web_profiler: true
+   web_profiler: true # Profiling should be disabled on prod environment
 ```
 
 
