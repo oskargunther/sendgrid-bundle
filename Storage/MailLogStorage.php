@@ -29,20 +29,20 @@ class MailLogStorage
             'tos' => $this->getRecipients($mail, 'tos'),
             'bccs' => $this->getRecipients($mail, 'bccs'),
             'ccs' => $this->getRecipients($mail, 'ccs'),
-            'contents' => array_map(function (Content $content) {
+            'contents' => !empty($mail->getContents()) ? array_map(function (Content $content) {
                 return [
                     'type' => $content->getType(),
                     'content' => $content->getValue(),
                 ];
-            }, $mail->getContents()),
-            'attachments' => array_map(function(Attachment $attachment) {
+            }, $mail->getContents()) : [],
+            'attachments' => !empty($mail->getAttachments()) ? array_map(function(Attachment $attachment) {
                 return [
                     'filename' => $attachment->getFilename(),
                     'mime' => $attachment->getType(),
                     'cid' => $attachment->getContentID(),
                     'disposition' => $attachment->getDisposition()
                 ];
-            }, $mail->getAttachments()),
+            }, $mail->getAttachments()) : [],
             'messageId' => $messageId,
         ];
     }
