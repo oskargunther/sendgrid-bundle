@@ -16,6 +16,7 @@ services:
     arguments:
       - '%og_send_grid.web_profiler%'
       - '@debug.stopwatch'
+      - '@og_send_grid.storage.mail_log'
     tags:
     - name: data_collector
       template: '@OGSendGrid/WebProfiler/index.html.twig'
@@ -27,9 +28,13 @@ services:
     arguments:
       - '%og_send_grid.web_profiler%'
       - '@debug.stopwatch'
-      - '@og_send_grid.data_collector'
+      - '@og_send_grid.storage.mail_log'
     tags:
         - { name: kernel.event_subscriber }
 
   og_send_grid.subscriber.webhook:
     class: OG\SendGridBundle\EventSubscriber\WebHookEventSubscriber
+
+  og_send_grid.storage.mail_log:
+    class: OG\SendGridBundle\Storage\MailLogStorage
+    public: true

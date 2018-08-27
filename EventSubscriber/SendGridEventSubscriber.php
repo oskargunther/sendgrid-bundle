@@ -9,8 +9,8 @@
 namespace OG\SendGridBundle\EventSubscriber;
 
 
-use OG\SendGridBundle\DataCollector\SendGridDataCollector;
 use OG\SendGridBundle\Event\SendGridEvent;
+use OG\SendGridBundle\Storage\MailLogStorage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
@@ -20,13 +20,13 @@ class SendGridEventSubscriber implements EventSubscriberInterface
 
     private $webProfiler;
     private $stopwatch;
-    private $dataCollector;
+    private $mailLogStorage;
 
-    public function __construct($webProfiler, Stopwatch $stopwatch, SendGridDataCollector $dataCollector)
+    public function __construct($webProfiler, Stopwatch $stopwatch, MailLogStorage $mailLogStorage)
     {
         $this->webProfiler = $webProfiler;
         $this->stopwatch = $stopwatch;
-        $this->dataCollector = $dataCollector;
+        $this->mailLogStorage = $mailLogStorage;
     }
 
     public static function getSubscribedEvents()
@@ -55,7 +55,7 @@ class SendGridEventSubscriber implements EventSubscriberInterface
     public function onFinished(SendGridEvent $event)
     {
         if($this->webProfiler) {
-            $this->dataCollector->addMessage($event->getMail(), $event->getMessageId());
+            $this->mailLogStorage->addMail($event->getMail(), $event->getMessageId());
             $this->stopwatch->stop(self::STOPWATCH_EVENT);
         }
     }
