@@ -14,6 +14,7 @@ use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
 use SendGrid\Mail\Personalization;
+use SendGrid\Mail\To;
 use SendGrid\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -94,12 +95,14 @@ class SendGridProvider
     {
         if($this->redirectTo !== false) {
             $personalization = new Personalization();
-            $personalization->addTo($this->redirectTo);
+            $personalization->addTo(new To($this->redirectTo));
 
             $refObject   = new \ReflectionObject($mail);
             $refProperty = $refObject->getProperty('personalization');
             $refProperty->setAccessible(true);
-            $refProperty->setValue($mail, [$personalization]);
+            $refProperty->setValue($mail, null);
+
+            $mail->addPersonalization($personalization);
         }
     }
 
