@@ -99,7 +99,7 @@ class SendGridProvider
             $refObject   = new \ReflectionObject($mail);
             $refProperty = $refObject->getProperty('personalization');
             $refProperty->setAccessible(true);
-            $refProperty->setValue($mail, $personalization);
+            $refProperty->setValue($mail, [$personalization]);
         }
     }
 
