@@ -17,7 +17,7 @@ use SendGrid\Mail\Mail;
 class MailLogStorage
 {
     /**
-     * @var Mail[]
+     * @var array
      */
     private $mails;
 
