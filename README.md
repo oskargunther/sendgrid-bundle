@@ -7,6 +7,7 @@
 >2. Disable delivery through parameter
 >3. WebProfiler Extension
 >4. WebHook events dispatcher
+>5. Redirect all messages to specific address
 
 ## Using the Bundle.
 
@@ -39,13 +40,14 @@
 >```yaml
 >og_send_grid:
 >   api_key: string
->   disable_delivery: false
+>   disable_delivery: false # default false
 >```
 >
 >- config_dev.yml
 >```yaml
 >og_send_grid:
->   web_profiler: true
+>   web_profiler: true # default false
+>   redirect_to: test@test.com # default false
 >```
 >
 >### Usage:
