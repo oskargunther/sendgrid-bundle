@@ -13,6 +13,7 @@ use OG\SendGridBundle\Exception\BadRequestSendGridException;
 use OG\SendGridBundle\Exception\UnauthorizedSendGridException;
 use \SendGrid\Mail\Mail;
 use OG\SendGridBundle\Exception\SendGridException;
+use SendGrid\Mail\Personalization;
 use SendGrid\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -30,18 +31,23 @@ class SendGridProvider
     /** @var EventDispatcherInterface  */
     private $eventDispatcher;
 
+    /** @var mixed */
+    private $redirectTo;
+
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
      * @param $disableDelivery boolean
      * @param $webProfiler boolean
+     * @param $redirectTo mixed
      * @param $eventDispatcher EventDispatcherInterface
      */
-    public function __construct($apiKey, $disableDelivery, $webProfiler, EventDispatcherInterface $eventDispatcher)
+    public function __construct($apiKey, $disableDelivery, $webProfiler, $redirectTo, EventDispatcherInterface $eventDispatcher)
     {
         $this->sendgrid = new \SendGrid($apiKey);
         $this->disableDelivery = $disableDelivery;
         $this->webProfiler = $webProfiler;
+        $this->redirectTo = $redirectTo;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -67,6 +73,7 @@ class SendGridProvider
         }
 
         try {
+            $this->redirect($mail);
             $response = $this->sendgrid->send($mail);
             $this->checkResponse($response);
         } catch (\Exception $e) {
@@ -81,6 +88,19 @@ class SendGridProvider
         $this->eventDispatcher->dispatch(SendGridEvent::FINISHED, new SendGridEvent($mail, $messageId));
 
         return $messageId;
+    }
+
+    private function redirect(Mail $mail)
+    {
+        if($this->redirectTo !== false) {
+            $personalization = new Personalization();
+            $personalization->addTo($this->redirectTo);
+
+            $refObject   = new \ReflectionObject($mail);
+            $refProperty = $refObject->getProperty('personalization');
+            $refProperty->setAccessible(true);
+            $refProperty->setValue($mail, $personalization);
+        }
     }
 
     private function getMessageId(Response $response)

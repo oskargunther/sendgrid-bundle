@@ -8,6 +8,7 @@ services:
       - '%og_send_grid.api_key%'
       - '%og_send_grid.disable_delivery%'
       - '%og_send_grid.web_profiler%'
+      - '%og_send_grid.redirect_to%'
       - '@event_dispatcher'
     public: true
 

@@ -28,6 +28,9 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('web_profiler')
                 ->defaultFalse()
             ->end()
+            ->scalarNode('redirect_to')
+                ->defaultFalse()
+            ->end()
         ->end();
 
         // Here you should define the parameters that are allowed to
