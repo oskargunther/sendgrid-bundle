@@ -78,6 +78,7 @@
 >### Configuration:
 >
 >- Event subscriber:
+>
 >```php
 ><?php
 >namespace AppBundle\Subscriber;
@@ -137,6 +138,7 @@
 >```
 >
 >- routing.yml
+>
 >```yaml
 >sendgrid_webhook:
 >    path: /sendgrid/webhook
@@ -144,6 +146,7 @@
 >```
 >
 >- services.yml
+>
 >```yaml
 >app.subscriber.send_grid:
 >    class: AppBundle\Subscriber\WebHookSubcriber
@@ -157,4 +160,4 @@
 >2. [sendgrid/sendgrid-php](https://github.com/sendgrid/sendgrid-php) - execution time in miliseconds
 >3. [symfony/stopwatch](https://github.com/symfony/stopwatch) events
 >
->![alt text](https://github.com/oskargunther/sendgrid-bundle/blob/master/Doc/profiler.png)
+>![alt text](https://oskargunther.github.io/sendgrid-bundle/Doc/profiler.png)
