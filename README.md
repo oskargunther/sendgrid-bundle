@@ -13,6 +13,7 @@
 ## Using the Bundle.
 
 >### Installation:
+>
 >```
 >composer require oskargunther/sendgrid-bundle
 >```
@@ -38,6 +39,7 @@
 >### Configuration:
 >
 >- config.yml
+>
 >```yaml
 >og_send_grid:
 >    api_key: string
@@ -45,6 +47,7 @@
 >```
 >
 >- config_dev.yml
+>
 >```yaml
 >og_send_grid:
 >    web_profiler: true # default false
