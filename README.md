@@ -40,15 +40,15 @@
 >- config.yml
 >```yaml
 >og_send_grid:
->   api_key: string
->   disable_delivery: false # default false
+>    api_key: string
+>    disable_delivery: false # default false
 >```
 >
 >- config_dev.yml
 >```yaml
 >og_send_grid:
->   web_profiler: true # default false
->   redirect_to: test@test.com # default false
+>    web_profiler: true # default false
+>    redirect_to: test@test.com # default false
 >```
 >
 >### Usage:
