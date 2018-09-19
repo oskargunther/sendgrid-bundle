@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WebHookController extends Controller
 {
-    public function dispatchAction(Request $request)
+    public function dispatchAction(Request $request): Response
     {
         $events = json_decode($request->getContent(), true);
 

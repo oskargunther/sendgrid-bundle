@@ -25,14 +25,18 @@ class SendGridDataCollector extends DataCollector
     /** @var MailLogStorage */
     private $mailLogStorage;
 
-    public function __construct($webProfiler, Stopwatch $stopwatch, MailLogStorage $mailLogStorage)
+    public function __construct(
+        bool $webProfiler,
+        Stopwatch $stopwatch,
+        MailLogStorage $mailLogStorage
+    )
     {
         $this->webProfiler = $webProfiler;
         $this->stopwatch = $stopwatch;
         $this->mailLogStorage = $mailLogStorage;
     }
 
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
         $this->data['messages'] = $this->mailLogStorage->getMails();
         $this->data['isEnabled'] = $this->webProfiler;
@@ -44,28 +48,28 @@ class SendGridDataCollector extends DataCollector
         }
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->data = array();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'og_send_grid.data_collector';
     }
 
-    public function getMessages()
+    public function getMessages(): ?array
     {
         return $this->data['messages'];
     }
 
-    public function getIsEnabled()
+    public function getIsEnabled(): bool
     {
         return $this->data['isEnabled'];
     }
 
-    public function getDuration()
+    public function getDuration(): float
     {
-        return $this->data['duration'];
+        return (float) $this->data['duration'];
     }
 }
