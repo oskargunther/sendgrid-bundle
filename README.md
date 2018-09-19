@@ -13,6 +13,7 @@
 ## Using the Bundle.
 
 >### Installation:
+>
 >```
 >composer require oskargunther/sendgrid-bundle
 >```
@@ -38,17 +39,19 @@
 >### Configuration:
 >
 >- config.yml
+>
 >```yaml
 >og_send_grid:
->   api_key: string
->   disable_delivery: false # default false
+>    api_key: string
+>    disable_delivery: false # default false
 >```
 >
 >- config_dev.yml
+>
 >```yaml
 >og_send_grid:
->   web_profiler: true # default false
->   redirect_to: test@test.com # default false
+>    web_profiler: true # default %kernel.debug% (enabled)
+>    redirect_to: test@test.com # default false
 >```
 >
 >### Usage:
@@ -78,6 +81,7 @@
 >### Configuration:
 >
 >- Event subscriber:
+>
 >```php
 ><?php
 >namespace AppBundle\Subscriber;
@@ -137,6 +141,7 @@
 >```
 >
 >- routing.yml
+>
 >```yaml
 >sendgrid_webhook:
 >    path: /sendgrid/webhook
@@ -144,6 +149,7 @@
 >```
 >
 >- services.yml
+>
 >```yaml
 >app.subscriber.send_grid:
 >    class: AppBundle\Subscriber\WebHookSubcriber
@@ -157,4 +163,4 @@
 >2. [sendgrid/sendgrid-php](https://github.com/sendgrid/sendgrid-php) - execution time in miliseconds
 >3. [symfony/stopwatch](https://github.com/symfony/stopwatch) events
 >
->![alt text](https://github.com/oskargunther/sendgrid-bundle/blob/master/Doc/profiler.png)
+>![alt text](https://oskargunther.github.io/sendgrid-bundle/Doc/profiler.png)

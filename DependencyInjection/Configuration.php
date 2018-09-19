@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
                 ->defaultFalse()
             ->end()
             ->booleanNode('web_profiler')
-                ->defaultFalse()
+                ->defaultValue('%kernel.debug%')
             ->end()
             ->scalarNode('redirect_to')
                 ->defaultFalse()
