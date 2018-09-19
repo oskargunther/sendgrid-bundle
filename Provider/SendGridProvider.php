@@ -45,9 +45,9 @@ class SendGridProvider
      */
     public function __construct(
         string $apiKey,
-        string $disableDelivery,
-        string $webProfiler,
-        string $redirectTo,
+        bool $disableDelivery,
+        bool $webProfiler,
+        $redirectTo,
         EventDispatcherInterface $eventDispatcher)
     {
         $this->sendgrid = new \SendGrid($apiKey);
