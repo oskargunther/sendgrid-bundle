@@ -50,7 +50,7 @@
 >
 >```yaml
 >og_send_grid:
->    web_profiler: true # default false
+>    web_profiler: true # default %kernel.debug% (enabled)
 >    redirect_to: test@test.com # default false
 >```
 >
