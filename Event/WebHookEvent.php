@@ -33,12 +33,12 @@ class WebHookEvent extends Event
         $this->webHook = $webHook;
     }
 
-    public function getWebHook()
+    public function getWebHook(): WebHook
     {
         return $this->webHook;
     }
 
-    static public function getNamePrefix()
+    static public function getNamePrefix(): string
     {
         return 'sendgrid.webhook';
     }

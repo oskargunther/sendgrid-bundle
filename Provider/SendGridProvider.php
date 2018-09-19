@@ -43,7 +43,12 @@ class SendGridProvider
      * @param $redirectTo mixed
      * @param $eventDispatcher EventDispatcherInterface
      */
-    public function __construct($apiKey, $disableDelivery, $webProfiler, $redirectTo, EventDispatcherInterface $eventDispatcher)
+    public function __construct(
+        string $apiKey,
+        bool $disableDelivery,
+        bool $webProfiler,
+        $redirectTo,
+        EventDispatcherInterface $eventDispatcher)
     {
         $this->sendgrid = new \SendGrid($apiKey);
         $this->disableDelivery = $disableDelivery;
@@ -55,7 +60,7 @@ class SendGridProvider
     /**
      * @return \SendGrid\Mail\Mail
      */
-    public function createMessage()
+    public function createMessage(): Mail
     {
         return new Mail();
     }
@@ -65,7 +70,7 @@ class SendGridProvider
      * @return string MessageId
      * @throws SendGridException
      */
-    public function send(Mail $mail)
+    public function send(Mail $mail): ?string
     {
         $this->eventDispatcher->dispatch(SendGridEvent::STARTED, new SendGridEvent($mail));
         if($this->disableDelivery) {
@@ -91,7 +96,7 @@ class SendGridProvider
         return $messageId;
     }
 
-    private function redirect(Mail $mail)
+    private function redirect(Mail $mail): void
     {
         if($this->redirectTo !== false) {
             $personalization = new Personalization();
@@ -106,12 +111,12 @@ class SendGridProvider
         }
     }
 
-    private function getMessageId(Response $response)
+    private function getMessageId(Response $response): ?string
     {
         return $response->headers(true)['X-Message-Id'];
     }
 
-    private function checkResponse(Response $response)
+    private function checkResponse(Response $response): void
     {
         if ($response->statusCode() == 401) {
             throw new UnauthorizedSendGridException($response->body());

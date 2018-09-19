@@ -22,7 +22,11 @@ class SendGridEventSubscriber implements EventSubscriberInterface
     private $stopwatch;
     private $mailLogStorage;
 
-    public function __construct($webProfiler, Stopwatch $stopwatch, MailLogStorage $mailLogStorage)
+    public function __construct(
+        bool $webProfiler,
+        Stopwatch $stopwatch,
+        MailLogStorage $mailLogStorage
+    )
     {
         $this->webProfiler = $webProfiler;
         $this->stopwatch = $stopwatch;
@@ -38,21 +42,21 @@ class SendGridEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onFailed(SendGridEvent $event)
+    public function onFailed(SendGridEvent $event): void
     {
         if($this->webProfiler) {
             $this->stopwatch->stop(self::STOPWATCH_EVENT);
         }
     }
 
-    public function onStarted(SendGridEvent $event)
+    public function onStarted(SendGridEvent $event): void
     {
         if($this->webProfiler) {
             $this->stopwatch->start(self::STOPWATCH_EVENT);
         }
     }
 
-    public function onFinished(SendGridEvent $event)
+    public function onFinished(SendGridEvent $event): void
     {
         if($this->webProfiler) {
             $this->mailLogStorage->addMail($event->getMail(), $event->getMessageId());

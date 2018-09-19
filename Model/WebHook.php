@@ -78,7 +78,7 @@ class WebHook
         $this->messageBody = $data;
     }
 
-    private function setData($property, array &$data, $dataProperty)
+    private function setData($property, array &$data, $dataProperty): void
     {
         $this->{$property} = isset($data[$dataProperty]) ? $data[$dataProperty] : null;
     }

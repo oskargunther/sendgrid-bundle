@@ -30,12 +30,12 @@ class SendGridEvent extends Event
         $this->messageId = $messageId;
     }
 
-    public function getMail()
+    public function getMail(): ?Mail
     {
         return $this->mail;
     }
 
-    public function getMessageId()
+    public function getMessageId(): ?string
     {
         return $this->messageId;
     }

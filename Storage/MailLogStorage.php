@@ -21,7 +21,7 @@ class MailLogStorage
      */
     private $mails;
 
-    private function transform(Mail $mail, $messageId = '')
+    private function transform(Mail $mail, string $messageId = '')
     {
         return [
             'subject' => $mail->getGlobalSubject()->getSubject(),
@@ -47,7 +47,7 @@ class MailLogStorage
         ];
     }
 
-    private function getRecipients(Mail $mail, $type)
+    private function getRecipients(Mail $mail, string $type)
     {
         $recipients = [];
 
@@ -69,7 +69,7 @@ class MailLogStorage
         return $address->getName() . ' <' . $address->getEmailAddress() . '>';
     }
 
-    public function addMail(Mail $mail, $messageId = '')
+    public function addMail(Mail $mail, string $messageId = '')
     {
         $this->mails[] = $this->transform($mail, $messageId);
     }
