@@ -86,7 +86,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -94,7 +94,7 @@ class WebHook
     /**
      * @return int
      */
-    public function getTimestamp(): int
+    public function getTimestamp(): ?int
     {
         return $this->timestamp;
     }
@@ -102,7 +102,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getSmtpId(): string
+    public function getSmtpId(): ?string
     {
         return $this->smtpId;
     }
@@ -110,7 +110,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getEvent(): string
+    public function getEvent(): ?string
     {
         return $this->event;
     }
@@ -134,7 +134,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getSgMessageId(): string
+    public function getSgMessageId(): ?string
     {
         return $this->sgMessageId;
     }
@@ -142,7 +142,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getResponse(): string
+    public function getResponse(): ?string
     {
         return $this->response;
     }
@@ -150,7 +150,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getAttempt(): string
+    public function getAttempt(): ?string
     {
         return $this->attempt;
     }
@@ -158,7 +158,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getIp(): string
+    public function getIp(): ?string
     {
         return $this->ip;
     }
@@ -166,7 +166,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getUserAgent(): string
+    public function getUserAgent(): ?string
     {
         return $this->userAgent;
     }
@@ -174,7 +174,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
@@ -182,7 +182,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
@@ -198,7 +198,7 @@ class WebHook
     /**
      * @return string
      */
-    public function getMessageBody(): string
+    public function getMessageBody(): ?string
     {
         return $this->messageBody;
     }
