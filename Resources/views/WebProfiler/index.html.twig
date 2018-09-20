@@ -42,6 +42,10 @@
             <span class="value">{{ collector.duration }} ms</span>
             <span class="label">Duration</span>
         </div>
+        <div class="metric">
+            <span class="value">{{ collector.redirectTo }} ms</span>
+            <span class="label">Redirected</span>
+        </div>
     </div>
     {% if collector.isEnabled %}
         {% for message in collector.messages %}

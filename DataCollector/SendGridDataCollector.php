@@ -25,15 +25,20 @@ class SendGridDataCollector extends DataCollector
     /** @var MailLogStorage */
     private $mailLogStorage;
 
+    /** @var mixed */
+    private $redirectTo;
+
     public function __construct(
         bool $webProfiler,
         Stopwatch $stopwatch,
-        MailLogStorage $mailLogStorage
+        MailLogStorage $mailLogStorage,
+        $redirectTo
     )
     {
         $this->webProfiler = $webProfiler;
         $this->stopwatch = $stopwatch;
         $this->mailLogStorage = $mailLogStorage;
+        $this->redirectTo = $redirectTo;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null): void
@@ -46,6 +51,8 @@ class SendGridDataCollector extends DataCollector
         } catch (\Exception $e) {
             $this->data['duration'] = 0;
         }
+
+        $this->data['redirectTo'] = $this->redirectTo;
     }
 
     public function reset(): void
@@ -71,5 +78,10 @@ class SendGridDataCollector extends DataCollector
     public function getDuration(): float
     {
         return (float) $this->data['duration'];
+    }
+
+    public function getRedirectTo()
+    {
+        return ($this->data['redirectTo'] === false) ? 'False' : $this->data['redirectTo'];
     }
 }
