@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('og_send_grid')->children()
+        $treeBuilder->root('og_send_grid')->children()
             ->scalarNode('api_key')
                 ->isRequired()
             ->end()

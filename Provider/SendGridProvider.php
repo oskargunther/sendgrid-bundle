@@ -35,6 +35,15 @@ class SendGridProvider
     /** @var mixed */
     private $redirectTo;
 
+    /** @var Personalization[] */
+    private $originalPersonalization;
+
+    /** @var \ReflectionProperty */
+    private $personalizationReflection;
+
+    /** @var Personalization */
+    private $redirectPersonalization;
+
     /**
      * SendgridProvider constructor.
      * @param $apiKey string
@@ -55,6 +64,11 @@ class SendGridProvider
         $this->webProfiler = $webProfiler;
         $this->redirectTo = $redirectTo;
         $this->eventDispatcher = $eventDispatcher;
+
+        if($this->redirectTo !== false) {
+            $this->redirectPersonalization = new Personalization();
+            $this->redirectPersonalization->addTo(new To($this->redirectTo));
+        }
     }
 
     /**
@@ -78,17 +92,7 @@ class SendGridProvider
             return null;
         }
 
-        try {
-            $this->redirect($mail);
-            $response = $this->sendgrid->send($mail);
-            $this->checkResponse($response);
-        } catch (\Exception $e) {
-            $this->eventDispatcher->dispatch(SendGridEvent::FAILED, new SendGridEvent($mail));
-            if($e instanceof SendGridException) {
-                throw $e;
-            }
-            throw new SendGridException($e->getMessage());
-        }
+        $response = $this->proceed($mail);
 
         $messageId = $this->getMessageId($response);
         $this->eventDispatcher->dispatch(SendGridEvent::FINISHED, new SendGridEvent($mail, $messageId));
@@ -96,24 +100,53 @@ class SendGridProvider
         return $messageId;
     }
 
+    private function proceed(Mail $mail): Response
+    {
+        try {
+            $this->redirect($mail);
+
+            $response = $this->sendgrid->send($mail);
+
+            $this->reverseRedirection();
+            $this->checkResponse($response);
+
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->reverseRedirection();
+            $this->eventDispatcher->dispatch(SendGridEvent::FAILED, new SendGridEvent($mail));
+            if($e instanceof SendGridException) {
+                throw $e;
+            }
+            throw new SendGridException($e->getMessage());
+        }
+    }
+
     private function redirect(Mail $mail): void
     {
         if($this->redirectTo !== false) {
-            $personalization = new Personalization();
-            $personalization->addTo(new To($this->redirectTo));
+            $this->originalPersonalization = $mail->getPersonalizations();
 
-            $refObject   = new \ReflectionObject($mail);
-            $refProperty = $refObject->getProperty('personalization');
-            $refProperty->setAccessible(true);
-            $refProperty->setValue($mail, null);
+            $this->personalizationReflection = new \ReflectionProperty($mail, 'personalization');
+            $this->personalizationReflection->setAccessible(true);
+            $this->personalizationReflection->setValue($mail, [$this->redirectPersonalization]);
+        }
+    }
 
-            $mail->addPersonalization($personalization);
+    private function reverseRedirection(): void
+    {
+        if($this->redirectTo !== false) {
+            $this->personalizationReflection->setValue($this->originalPersonalization);
         }
     }
 
     private function getMessageId(Response $response): ?string
     {
-        return $response->headers(true)['X-Message-Id'];
+        try {
+            return $response->headers(true)['X-Message-Id'];
+        } catch (\Exception $e) {
+            throw new SendGridException('X-Message-Id header not found in SendGrid API response');
+        }
     }
 
     private function checkResponse(Response $response): void
