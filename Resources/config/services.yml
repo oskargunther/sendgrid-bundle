@@ -18,6 +18,7 @@ services:
       - '%og_send_grid.web_profiler%'
       - '@debug.stopwatch'
       - '@og_send_grid.storage.mail_log'
+      - '%og_send_grid.redirect_to%'
     tags:
     - name: data_collector
       template: '@OGSendGrid/WebProfiler/index.html.twig'
