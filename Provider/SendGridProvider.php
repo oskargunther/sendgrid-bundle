@@ -107,13 +107,13 @@ class SendGridProvider
 
             $response = $this->sendgrid->send($mail);
 
-            $this->reverseRedirection();
+            $this->reverseRedirection($mail);
             $this->checkResponse($response);
 
             return $response;
 
         } catch (\Exception $e) {
-            $this->reverseRedirection();
+            $this->reverseRedirection($mail);
             $this->eventDispatcher->dispatch(SendGridEvent::FAILED, new SendGridEvent($mail));
             if($e instanceof SendGridException) {
                 throw $e;
@@ -133,10 +133,10 @@ class SendGridProvider
         }
     }
 
-    private function reverseRedirection(): void
+    private function reverseRedirection(Mail $mail): void
     {
         if($this->redirectTo !== false) {
-            $this->personalizationReflection->setValue($this->originalPersonalization);
+            $this->personalizationReflection->setValue($mail, $this->originalPersonalization);
         }
     }
 
