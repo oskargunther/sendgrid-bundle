@@ -7,18 +7,24 @@
     {% endset %}
 
     {% set text %}
-        <div class="sf-toolbar-info-piece">
-            {% if collector.isEnabled %}
+        {% if collector.isEnabled %}
+            <div class="sf-toolbar-info-piece">
                 <b>Sent messages</b>
                 <span>{{ collector.messages|length }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
                 <b>Duration</b>
                 <span>{{ collector.duration }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
                 <b>Redirected</b>
                 <span>{{ collector.redirectTo }}</span>
-            {% else %}
+            </div>
+        {% else %}
+            <div class="sf-toolbar-info-piece">
                 <b>Data collector is disabled</b>
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
     {% endset %}
 
     {# the 'link' value set to 'false' means that this panel doesn't
