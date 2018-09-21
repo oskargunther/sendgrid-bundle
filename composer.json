@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "OG\\SendGridBundle\\": ""
+            "OG\\SendGridBundle\\": "src"
         }
     },
     "require-dev": {
