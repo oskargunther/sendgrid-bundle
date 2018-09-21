@@ -11,6 +11,10 @@
             {% if collector.isEnabled %}
                 <b>Sent messages</b>
                 <span>{{ collector.messages|length }}</span>
+                <b>Duration</b>
+                <span>{{ collector.duration }}</span>
+                <b>Redirected</b>
+                <span>{{ collector.redirectTo }}</span>
             {% else %}
                 <b>Data collector is disabled</b>
             {% endif %}
