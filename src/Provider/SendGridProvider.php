@@ -68,6 +68,9 @@ class SendGridProvider
         if($this->redirectTo !== false) {
             $this->redirectPersonalization = new Personalization();
             $this->redirectPersonalization->addTo(new To($this->redirectTo));
+
+            $this->personalizationReflection = new \ReflectionProperty(Mail::class, 'personalization');
+            $this->personalizationReflection->setAccessible(true);
         }
     }
 
@@ -127,8 +130,6 @@ class SendGridProvider
         if($this->redirectTo !== false) {
             $this->originalPersonalization = $mail->getPersonalizations();
 
-            $this->personalizationReflection = new \ReflectionProperty($mail, 'personalization');
-            $this->personalizationReflection->setAccessible(true);
             $this->personalizationReflection->setValue($mail, [$this->redirectPersonalization]);
         }
     }
