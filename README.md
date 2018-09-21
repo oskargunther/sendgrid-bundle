@@ -29,7 +29,7 @@
 >    {
 >        $bundles = [
 >            ....
->            new \OG\SendGridBundle\OGSendGridBundle(),
+>            new OG\SendGridBundle\OGSendGridBundle(),
 >        ];
 >
 >    }
