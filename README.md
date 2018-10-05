@@ -83,7 +83,6 @@ try {
 - Event subscriber:
 
 ```php
-<?php
 namespace AppBundle\Subscriber;
 
 
