@@ -83,9 +83,6 @@ try {
 - Event subscriber:
 
 ```php
-namespace AppBundle\Subscriber;
-
-
 use OG\SendGridBundle\Event\WebHookEvent;
 use OG\SendGridBundle\EventSubscriber\WebHookEventSubscriber;
 
